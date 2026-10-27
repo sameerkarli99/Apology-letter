@@ -82,9 +82,10 @@ button.big:active{transform:scale(.97)}
 </main>
 
 <script>
-// ✏️ PHOTOS: set BG and each card's img to a data: URI (send photos to Claude to embed)
-var BG="";
-if(BG)document.getElementById("bg").style.backgroundImage="url("+BG+")";
+// 📸 Photos load from the same GitHub repo folder: background.jpg, photo1.jpg … photo4.jpg
+var EXT=["jpg","jpeg","png","webp","JPG","JPEG","PNG"];
+function loadPic(name,ok){(function t(k){if(k>=EXT.length)return;var im=new Image();im.onload=function(){ok(im.src)};im.onerror=function(){t(k+1)};im.src=name+"."+EXT[k];})(0);}
+loadPic("background",function(u){document.getElementById("bg").style.backgroundImage="url("+u+")";});
 var cards=[
  {t:"I’m sorry. I made a mistake, and I know it hurt you.",hint:"psst… flip me 🥺",cap:"Us 💗",e:"📸",img:""},
  {t:"You deserve better than excuses. I’m going to correct this.",hint:"tap to see something cute 🐻",cap:"My favourite person",e:"📸",img:""},
@@ -92,13 +93,15 @@ var cards=[
  {t:"I love you, Babu. Please give me a chance to make it right.",hint:"last one… flip me 💌",cap:"Forever yours",e:"📸",img:""}
 ];
 var g=document.getElementById("grid");
-cards.forEach(function(c){
+cards.forEach(function(c,i){
   var b=document.createElement("button");b.className="pc";b.setAttribute("aria-label","Postcard, tap to flip");
   var bg=c.img?'style="background-image:url('+c.img+')"':"";
   b.innerHTML='<div class="in"><div class="face front"><div class="txt">'+c.t+'</div><div class="flipme">'+c.hint+'</div></div>'+
    '<div class="face back"><div class="photo" '+bg+'>'+(c.img?"":c.e)+'</div><div class="cap">'+c.cap+'</div></div></div>';
   b.onclick=function(){b.classList.toggle("flip")};
   g.appendChild(b);
+  var ph=b.querySelector(".photo");
+  loadPic("photo"+(i+1),function(u){ph.style.backgroundImage="url("+u+")";ph.textContent="";});
 });
 var h=document.getElementById("hearts"),em=["💗","💕","🌸","💖"];
 for(var i=0;i<14;i++){var s=document.createElement("span");s.textContent=em[i%4];
